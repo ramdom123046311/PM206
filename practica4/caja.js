@@ -131,7 +131,6 @@ export function uiAgregarPedidoCaja(rl, caja, callbackMenu) {
         pedirProducto();
     });
 }
-
 export function uiGenerarTicketCaja(rl, caja, callbackMenu) {
     if (caja.pedidos.length === 0) {
         console.log("\nNo hay pedidos para generar ticket.\n");
