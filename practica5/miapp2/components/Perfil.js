@@ -1,14 +1,37 @@
 import { Button,Text,Image,View } from "react-native";
-//falta importarlo a parte en app.js
-export const Perfil= () =>{
+import React,{useState} from "react";
+//Perfil desustructuracion
+export const Perfil= ({nombre,carrera,materia,cuatrimestre}) => {
+   const [mostrar,setMostrar] = useState(false);
+    //Renderizado condicional
+    return (
+        <View>
+            <Text>{nombre}</Text>
+
+            { mostrar && 
+            <>
+            <Text>{carrera}</Text>
+            <Text>{materia}</Text>
+            <Text>{cuatrimestre}</Text>
+            </>
+            }
+            <Button
+                title = "mostrar perfil"
+                onPress= {()=> setMostrar(!mostrar)}
+            />
+        </View>
+    );
+}
+
+/* export const Perfil= (props) =>{
     return(
         <View>
         
-        <Text>Programacion Movil</Text>
-        <Text>Ingenieria en sistemas computacionales</Text>
-        <Text>Manuel David Tovar Rodriguez</Text>
-        <Text>9 cuatrimestre</Text>
+        <Text>{props.nombre}</Text>
+        <Text>{props.carrera}</Text>
+        <Text>{props.materia}</Text>
+        <Text>{props.cuatrimestre}</Text>
         
         </View>
     )
-}
+} */

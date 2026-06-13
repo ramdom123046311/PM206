@@ -9,13 +9,9 @@ export default function App() {
   return (
     <View style={styles.container}>
 
-      <Image source={require('./assets/wave.png')}/>
-      <Text> Hola mundo RN! </Text>
-      <Text>------Componente simple-----</Text>
-      <Saludo></Saludo>
-      <Text>------Componente compuesto-----</Text>
-      <Saludo2></Saludo2>
-      <Perfil></Perfil>
+      <Perfil nombre= "Manuel"carrera = "sistemas" materia= "P movil" cuatrimestre ="9no"></Perfil>
+      <Text>---------------------------------------------------------------------------------------</Text>
+      <Perfil nombre= "Daniel"carrera = "mecatronica" materia= "embebidos" cuatrimestre ="8vo"></Perfil>
       <StatusBar style="auto" />
 
     </View>
