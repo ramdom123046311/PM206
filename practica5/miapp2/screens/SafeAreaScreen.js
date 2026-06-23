@@ -1,73 +1,56 @@
 //Zona 1: Importaciones de componentes y archivos//
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View ,Image,SafeAreaView,ScrollView,Switch} from 'react-native';
+import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, Switch } from 'react-native';
+
 //Zona 2: Main Hogar de los componentes//
 export default function SafeAreaScreen() {
-const [activo, setActivo] = useState(true);
-const contenedor = activo ? SafeAreaScreen: View;
-return(
-  <view style={styles.fila}>
-  <contenedor style = {style.fondo}>
-    
-<Text style = {style.titulo}>Safearea y scrollView</Text>
+  const [activo, setActivo] = useState(true);
+  const Contenedor = activo ? SafeAreaView : View;
 
-<Text style = {style.description}> Safe area view evita que el cotenido pase la zona segura</Text>
+  return (
+    <Contenedor style={styles.fondo}>
+      <Text style={styles.titulo}>Safearea y scrollView</Text>
+      <Text style={styles.description}>SafeArea view evita que el contenido pase la zona segura</Text>
 
+      <View style={styles.fila}>
+        <Text style={styles.etiqueta}>Activar safe area view</Text>
+        <Switch
+          value={activo}
+          onValueChange={(valor) => setActivo(valor)}
+        />
+      </View>
 
- <text style={styles.etiqueta}>Activar save area view</text>
+      <Text style={styles.description}>ScrollView</Text>
 
- <switch
-  value ={activo}
-  onValueChange = {(valor) => setActivo(valor)}
- />
-  </contenedor>
-
-  <Text style = {styles.description}>
-    ScrollView
-  </Text>
-
-  <scrollView style = {styles.lista}>
-    <View style= {[styles.tarjeta,{backgroundColor:'red'}]}>
-     <Text style={style.textoTarjeta}>
-    Elemento 1
-     </Text>
-    </View>
-      <View style= {[styles.tarjeta,{backgroundColor:'red'}]}>
-     <Text style={styles.textoTarjeta}>
-    Elemento 2
-     </Text>
-    </View>
-      <View style= {[styles.tarjeta,{backgroundColor:'red'}]}>
-     <Text style={styles.textoTarjeta}>
-    Elemento 3
-     </Text>
-    </View>
-      <View style= {[styles.tarjeta,{backgroundColor:'red'}]}>
-     <Text style={styles.textoTarjeta}>
-    Elemento 4
-     </Text>
-    </View>
-      <View style= {[styles.tarjeta,{backgroundColor:'red'}]}>
-     <Text style={styles.textoTarjeta}>
-    Elemento 5
-     </Text>
-    </View>
-      <View style= {[styles.tarjeta,{backgroundColor:'red'}]}>
-     <Text style={styles.textoTarjeta}>
-    Elemento 6
-     </Text>
-    </View>
-      <View style= {[styles.tarjeta,{backgroundColor:'red'}]}>
-     <Text style={styles.textoTarjeta}>
-    Elemento 7
-     </Text>
-    </View>
-  </scrollView>
-</view>
-)
+      <ScrollView style={styles.lista}>
+        <View style={[styles.tarjeta, { backgroundColor: 'red' }]}>
+          <Text style={styles.textoTarjeta}>Elemento 1</Text>
+        </View>
+        <View style={[styles.tarjeta, { backgroundColor: 'blue' }]}>
+          <Text style={styles.textoTarjeta}>Elemento 2</Text>
+        </View>
+        <View style={[styles.tarjeta, { backgroundColor: 'green' }]}>
+          <Text style={styles.textoTarjeta}>Elemento 3</Text>
+        </View>
+        <View style={[styles.tarjeta, { backgroundColor: 'yellow' }]}>
+          <Text style={styles.textoTarjeta}>Elemento 4</Text>
+        </View>
+        <View style={[styles.tarjeta, { backgroundColor: 'white' }]}>
+          <Text style={styles.textoTarjeta}>Elemento 5</Text>
+        </View>
+        <View style={[styles.tarjeta, { backgroundColor: 'black' }]}>
+          <Text style={styles.textoTarjeta}>Elemento 6</Text>
+        </View>
+        <View style={[styles.tarjeta, { backgroundColor: 'orange' }]}>
+          <Text style={styles.textoTarjeta}>Elemento 7</Text>
+        </View>
+      </ScrollView>
+    </Contenedor>
+  );
 }
-//Zona1: Estilos y posicionamiento//
+
+//Zona 3: Estilos y posicionamiento//
 const styles = StyleSheet.create({
   fondo: {
     flex: 1,
