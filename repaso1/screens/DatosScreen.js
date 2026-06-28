@@ -9,11 +9,11 @@ import {
   StyleSheet
 } from "react-native";
 
-export default function TextInputAlertScreen() {
+export default function DatosScreen() {
   const [nombre, setNombre] = useState('');
-  const [password, setPassword] = useState('');
-  const [edad, setEdad] = useState('');
-  const [correo, setCorreo] = useState('');
+  const [carrera, setCarrera] = useState('');
+  const [Semestre, setSemestre] = useState('');
+
 
   const procesarRegistro = () => {
 
@@ -21,7 +21,7 @@ export default function TextInputAlertScreen() {
       Keyboard.dismiss();
     }
 
-    if (!nombre || !password || !edad || !correo) {
+    if (!nombre || !carrera || !semestre ) {
       alertasManager("Validación", "Todos los campos son obligatorios");
       return;
     }
@@ -52,33 +52,20 @@ export default function TextInputAlertScreen() {
 
       <TextInput
         style={styles.input}
-        placeholder="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={true}
+        placeholder="Carrera"
+        value={carrera}
+        onChangeText={setCarrera}
       />
-
-      <TextInput
+     
+  <TextInput
         style={styles.input}
-        placeholder="Edad"
-        value={edad}
-        onChangeText={setEdad}
-        keyboardType="numeric"
-        maxLength={5}
+        placeholder="Semestre"
+        value={semestre}
+        onChangeText={setSemestre}
       />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Correo"
-        value={correo}
-        onChangeText={setCorreo}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        autoCorrect={false}
-      />
-
+  
       <Button
-        title="Registrar Usuario"
+        title="Registrar"
         onPress={procesarRegistro}
       />
 
