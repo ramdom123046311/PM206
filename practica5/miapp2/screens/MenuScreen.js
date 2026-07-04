@@ -1,58 +1,79 @@
-//Zona 1: Importaciones de componentes y archivos//
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View ,Button} from 'react-native';
-import React,{useState} from 'react';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, Button } from 'react-native';
+
 import TarjetasScreen from './TarjetasScreen';
 import SaveAreaScreen from './SafeAreaScreen';
 import PressableSwitchScreen from './PressableSwitchScreen';
 import TextInputAlertScreen from './TextInputAlertScreen';
 import FlatListScreen from './FlatListScreen';
 import ImageBackgroundScreen from './ImageBackgroundScreen';
-//Zona 2: Main Hogar de los componentes//
+import ActivityIndicatorScreen from './ActivityIndicatorScreen';
+import ModalScreen from './ModalScreen';
+
 export default function MenuScreen() {
-    const[screen,setScreen] = useState('menu');
-        switch(screen){
-            case 'Tarjetas':
-            return <TarjetasScreen/>
-            case 'Safearea':
-             return <SaveAreaScreen/>
-             case 'Pressable':
-             return <PressableSwitchScreen/>
-             case 'Text':
-             return <TextInputAlertScreen/>
-              case 'FlatList':
-             return <FlatListScreen/>
-               case 'Image':
-             return <ImageBackgroundScreen/>
-            case 'menu':
-                default:
-                     return (
-    <View style={styles.container}>
-<Text>Menu de Practicas</Text>
-<Button onPress={()=>setScreen('Tarjetas')}title='tarjetas'></Button>
-<Button onPress={()=>setScreen('Safearea')}title='SafeArea'></Button>
-<Button onPress={()=>setScreen('Pressable')}title='Pressable'></Button>
-<Button onPress={()=>setScreen('Text')}title='Textinput'></Button>
-<Button onPress={()=>setScreen('FlatList')}title='FlatList'></Button>
-<Button onPress={()=>setScreen('Image')}title='ImageBack'></Button>
-    </View>
-  );
 
-        }
-  return (
-    <View style={styles.container}>
+    const [screen, setScreen] = useState('menu');
 
-    </View>
-  );
+    switch (screen) {
 
+        case 'Tarjetas':
+            return <TarjetasScreen />;
+
+        case 'Safearea':
+            return <SaveAreaScreen />;
+
+        case 'Pressable':
+            return <PressableSwitchScreen />;
+
+        case 'Text':
+            return <TextInputAlertScreen />;
+
+        case 'FlatList':
+            return <FlatListScreen />;
+
+        case 'Image':
+            return <ImageBackgroundScreen />;
+
+        case 'Activity':
+            return <ActivityIndicatorScreen />;
+
+        case 'Modal':
+            return <ModalScreen />;
+
+        default:
+
+            return (
+                <View style={styles.container}>
+
+                    <Text style={styles.titulo}>Menú de Prácticas</Text>
+
+                    <Button title="Tarjetas" onPress={() => setScreen('Tarjetas')} />
+                    <Button title="SafeArea" onPress={() => setScreen('Safearea')} />
+                    <Button title="Pressable" onPress={() => setScreen('Pressable')} />
+                    <Button title="TextInput" onPress={() => setScreen('Text')} />
+                    <Button title="FlatList" onPress={() => setScreen('FlatList')} />
+                    <Button title="ImageBackground" onPress={() => setScreen('Image')} />
+                    <Button title="ActivityIndicator" onPress={() => setScreen('Activity')} />
+                    <Button title="Modal" onPress={() => setScreen('Modal')} />
+
+                </View>
+            );
+    }
 }
-//Zona1: Estilos y posicionamiento//
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#e11010',
-    alignItems: 'center',
-    justifyContent: 'Center',
-    flexDirection:'column'
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#e11010',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 10
+    },
+
+    titulo: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: '#fff'
+    }
 });

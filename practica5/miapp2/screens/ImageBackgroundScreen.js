@@ -3,44 +3,45 @@ import {
   View,
   Text,
   StyleSheet,
-  ImageBackground
+  ImageBackground,
+  ActivityIndicator
 } from 'react-native';
 
-export default function FondoPantalla() {
-
+export default function ImageBackgroundScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+    async function prepararAplicacion() {
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-    return () => clearTimeout(timer);
+    prepararAplicacion();
   }, []);
 
   if (loading) {
     return (
       <View style={styles.splash}>
-        <Text style={styles.splashText}>
-          Cargando aplicación...
-        </Text>
+        <ActivityIndicator size="large" color="#0000ff" style={{ marginBottom: 20 }} />
+        <Text style={styles.splashText}>Cargando aplicación...</Text>
       </View>
     );
   }
 
   return (
     <ImageBackground
-      source={{
-        uri: 'https://picsum.photos/500/900'
-      }}
+      source={{ uri: 'https://picsum.photos/500/900' }}
       style={styles.background}
       resizeMode="cover"
     >
+      {}
       <View style={styles.overlay}>
-        <Text style={styles.titulo}>
-          Bienvenido a React Native
-        </Text>
-
+        <Text style={styles.titulo}>Bienvenido a React Native</Text>
         <Text style={styles.subtitulo}>
           Ejemplo de ImageBackground y SplashScreen
         </Text>
@@ -54,35 +55,34 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
-
   splashText: {
     fontSize: 24,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: '#333333',
   },
-
   background: {
     flex: 1,
-    width: '100%'
+    width: '100%',
   },
-
   overlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)'
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    paddingHorizontal: 20,
   },
-
   titulo: {
     fontSize: 28,
     color: '#ffffff',
     fontWeight: 'bold',
-    marginBottom: 10
+    marginBottom: 10,
+    textAlign: 'center',
   },
-
   subtitulo: {
     fontSize: 18,
-    color: '#ffffff'
-  }
+    color: '#e0e0e0',
+    textAlign: 'center',
+  },
 });
