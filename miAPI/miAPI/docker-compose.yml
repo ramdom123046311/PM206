@@ -1,10 +1,10 @@
-version: "3.9"
-
 services:
-
   api:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: ServerAPI
+    restart: unless-stopped
     ports:
       - "5000:5000"
     volumes:
@@ -14,11 +14,16 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://admin:123456@postgres:5432/DB_miapi
+    command: >
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port 5000
+      --reload
 
   postgres:
     image: postgres:15
     container_name: ServerBD
-    restart: always
+    restart: unless-stopped
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: 123456
@@ -27,12 +32,15 @@ services:
       - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d DB_miapi"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U admin -d DB_miapi"
+        ]
       interval: 5s
-      retries: 5
       timeout: 5s
+      retries: 10
 
 volumes:
   postgres_data:

@@ -1,5 +1,5 @@
+import AltaUsuariosScreen from "../../screens/AltaUsuariosScreen";
 
-import AlUsuariosScreen from "../../screens/AltaUsuariosScreen";
-export default function Alta(){
-    return <AlUsuariosScreen/>
+export default function Alta() {
+  return <AltaUsuariosScreen />;
 }
