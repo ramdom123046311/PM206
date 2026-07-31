@@ -1,25 +1,34 @@
-import React, { useCallback, useState } from "react";
+import React, {
+  useCallback,
+  useState,
+} from "react";
 
 import {
-  SafeAreaView,
-  View,
-  Text,
   FlatList,
+  Pressable,
+  SafeAreaView,
   StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
-import { useFocusEffect } from "expo-router";
+import {
+  router,
+  useFocusEffect,
+} from "expo-router";
 
-
-const API_URL = "http://localhost:5000/v1/usuarios/";
-
+import { API_URL } from "../config/api";
 
 export default function ConsultaUsuariosScreen() {
   const [usuarios, setUsuarios] = useState([]);
+  const [cargando, setCargando] = useState(false);
+  const [error, setError] = useState("");
 
-
-  const obtenerUsuarios = async () => {
+  const obtenerUsuarios = useCallback(async () => {
     try {
+      setCargando(true);
+      setError("");
+
       const respuesta = await fetch(API_URL, {
         method: "GET",
         headers: {
@@ -27,40 +36,59 @@ export default function ConsultaUsuariosScreen() {
         },
       });
 
-      if (!respuesta.ok) {
-        const textoError = await respuesta.text();
+      const datos = await respuesta.json();
 
+      console.log(
+        "Respuesta de usuarios:",
+        datos
+      );
+
+      if (!respuesta.ok) {
         throw new Error(
-          `Error ${respuesta.status}: ${textoError}`
+          obtenerMensajeError(
+            datos,
+            "No fue posible consultar usuarios."
+          )
         );
       }
 
-      const datos = await respuesta.json();
+      setUsuarios(
+        Array.isArray(datos.usuarios)
+          ? datos.usuarios
+          : []
+      );
+    } catch (errorPeticion) {
+      console.error(
+        "Error al consultar usuarios:",
+        errorPeticion
+      );
 
-      console.log("Respuesta API:", datos);
-
-      if (Array.isArray(datos.usuarios)) {
-        setUsuarios(datos.usuarios);
-      } else {
-        setUsuarios([]);
-      }
-    } catch (error) {
-      console.log("Error API:", error);
       setUsuarios([]);
+      setError(
+        errorPeticion.message ||
+          "No fue posible conectar con la API."
+      );
+    } finally {
+      setCargando(false);
     }
-  };
+  }, []);
 
-
-  /*
-   * Se ejecuta cada vez que entras a la pestaña Listado.
-   * Así aparecerán los usuarios agregados desde Alta.
-   */
   useFocusEffect(
     useCallback(() => {
       obtenerUsuarios();
-    }, [])
+    }, [obtenerUsuarios])
   );
 
+  const abrirDetalle = (usuario) => {
+    router.push({
+      pathname: "/detalle-usuario",
+      params: {
+        id: String(usuario.id),
+        nombre: String(usuario.nombre),
+        edad: String(usuario.edad),
+      },
+    });
+  };
 
   const renderTarjeta = ({ item }) => (
     <View style={styles.card}>
@@ -68,14 +96,22 @@ export default function ConsultaUsuariosScreen() {
         {item.nombre}
       </Text>
 
-      <View style={styles.linea}></View>
+      <View style={styles.linea} />
 
       <Text style={styles.info}>
         Edad: {item.edad} años
       </Text>
+
+      <Pressable
+        style={styles.botonDetalle}
+        onPress={() => abrirDetalle(item)}
+      >
+        <Text style={styles.textoDetalle}>
+          Ver detalles →
+        </Text>
+      </Pressable>
     </View>
   );
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -83,24 +119,61 @@ export default function ConsultaUsuariosScreen() {
         Lista de Usuarios
       </Text>
 
+      {error !== "" && (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorTexto}>
+            {error}
+          </Text>
+
+          <Pressable
+            onPress={obtenerUsuarios}
+            style={styles.botonReintentar}
+          >
+            <Text style={styles.textoReintentar}>
+              Reintentar
+            </Text>
+          </Pressable>
+        </View>
+      )}
+
       <FlatList
         data={usuarios}
-        keyExtractor={(item) => String(item.id)}
+        keyExtractor={(item) =>
+          String(item.id)
+        }
         renderItem={renderTarjeta}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{
+          paddingBottom: 20,
+        }}
+        refreshing={cargando}
         onRefresh={obtenerUsuarios}
-        refreshing={false}
         ListEmptyComponent={
-          <Text style={styles.info}>
-            No hay usuarios registrados.
-          </Text>
+          !cargando && error === "" ? (
+            <Text style={styles.sinUsuarios}>
+              No hay usuarios registrados.
+            </Text>
+          ) : null
         }
       />
     </SafeAreaView>
   );
 }
 
+function obtenerMensajeError(
+  datos,
+  mensajePredeterminado
+) {
+  if (typeof datos?.detail === "string") {
+    return datos.detail;
+  }
+
+  if (datos?.detail) {
+    return JSON.stringify(datos.detail);
+  }
+
+  return mensajePredeterminado;
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -123,7 +196,6 @@ const styles = StyleSheet.create({
     padding: 18,
     marginBottom: 15,
     elevation: 4,
-
     shadowColor: "#000",
     shadowOpacity: 0.15,
     shadowRadius: 5,
@@ -148,5 +220,43 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 16,
     color: "#4B5563",
+  },
+
+  botonDetalle: {
+    marginTop: 16,
+    alignSelf: "flex-end",
+  },
+
+  textoDetalle: {
+    color: "#2563EB",
+    fontWeight: "bold",
+  },
+
+  errorContainer: {
+    backgroundColor: "#FFFFFF",
+    padding: 14,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+
+  errorTexto: {
+    color: "#DC2626",
+    textAlign: "center",
+  },
+
+  botonReintentar: {
+    marginTop: 10,
+    alignSelf: "center",
+  },
+
+  textoReintentar: {
+    color: "#2563EB",
+    fontWeight: "bold",
+  },
+
+  sinUsuarios: {
+    color: "#4B5563",
+    textAlign: "center",
+    marginTop: 30,
   },
 });

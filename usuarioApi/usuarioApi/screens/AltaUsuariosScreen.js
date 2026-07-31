@@ -1,42 +1,64 @@
 import React, { useState } from "react";
 
 import {
-  View,
-  SafeAreaView,
-  Text,
-  TextInput,
-  Pressable,
-  StyleSheet,
   Alert,
   Platform,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 
 import { router } from "expo-router";
 
-
-const API_URL = "http://localhost:5000/v1/usuarios/";
+import {
+  API_URL,
+  headersPublicos,
+} from "../config/api";
 
 export default function AltaUsuariosScreen() {
   const [nombre, setNombre] = useState("");
   const [edad, setEdad] = useState("");
   const [cargando, setCargando] = useState(false);
 
-
-  const mostrarMensaje = (titulo, mensaje) => {
+  const mostrarMensaje = (
+    titulo,
+    mensaje,
+    accionFinal
+  ) => {
     if (Platform.OS === "web") {
       window.alert(`${titulo}\n${mensaje}`);
-    } else {
-      Alert.alert(titulo, mensaje);
-    }
-  };
 
+      if (accionFinal) {
+        accionFinal();
+      }
+
+      return;
+    }
+
+    Alert.alert(
+      titulo,
+      mensaje,
+      [
+        {
+          text: "Aceptar",
+          onPress: accionFinal,
+        },
+      ]
+    );
+  };
 
   const guardarUsuario = async () => {
     const nombreLimpio = nombre.trim();
     const edadLimpia = edad.trim();
     const edadNumero = Number(edadLimpia);
 
-    if (nombreLimpio === "" || edadLimpia === "") {
+    if (
+      nombreLimpio === "" ||
+      edadLimpia === ""
+    ) {
       mostrarMensaje(
         "Campos vacíos",
         "Llena todos los campos."
@@ -50,7 +72,7 @@ export default function AltaUsuariosScreen() {
       edadNumero <= 0
     ) {
       mostrarMensaje(
-        "Edad inválida",
+        "Edad incorrecta",
         "Ingresa una edad válida mayor que cero."
       );
 
@@ -60,52 +82,50 @@ export default function AltaUsuariosScreen() {
     try {
       setCargando(true);
 
-      const respuesta = await fetch(API_URL, {
-        method: "POST",
-
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          nombre: nombreLimpio,
-          edad: edadNumero,
-        }),
-      });
+      const respuesta = await fetch(
+        API_URL,
+        {
+          method: "POST",
+          headers: headersPublicos,
+          body: JSON.stringify({
+            nombre: nombreLimpio,
+            edad: edadNumero,
+          }),
+        }
+      );
 
       const datos = await respuesta.json();
 
-      console.log("Respuesta al guardar:", datos);
+      console.log(
+        "Respuesta al crear usuario:",
+        datos
+      );
 
       if (!respuesta.ok) {
-        let mensajeError = "No fue posible agregar el usuario.";
-
-        if (typeof datos.detail === "string") {
-          mensajeError = datos.detail;
-        } else if (datos.detail) {
-          mensajeError = JSON.stringify(datos.detail);
-        }
-
-        throw new Error(mensajeError);
+        throw new Error(
+          obtenerMensajeError(
+            datos,
+            "No fue posible agregar el usuario."
+          )
+        );
       }
-
-      mostrarMensaje(
-        "Usuario agregado",
-        datos.mensaje ||
-          "El usuario fue agregado correctamente."
-      );
 
       setNombre("");
       setEdad("");
 
-      /*
-       * Después de guardar, abre la pestaña del listado.
-       * ConsultaUsuariosScreen volverá a consultar la API.
-       */
-      router.replace("/(tabs)/consulta");
+      mostrarMensaje(
+        "Usuario agregado",
+        datos.mensaje ||
+          "El usuario fue agregado correctamente.",
+        () => {
+          router.replace("/(tabs)/consulta");
+        }
+      );
     } catch (error) {
-      console.error("Error al guardar usuario:", error);
+      console.error(
+        "Error al crear usuario:",
+        error
+      );
 
       mostrarMensaje(
         "Error",
@@ -116,7 +136,6 @@ export default function AltaUsuariosScreen() {
       setCargando(false);
     }
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -143,7 +162,10 @@ export default function AltaUsuariosScreen() {
         />
 
         <Pressable
-          style={styles.boton}
+          style={[
+            styles.boton,
+            cargando && styles.botonDeshabilitado,
+          ]}
           onPress={guardarUsuario}
           disabled={cargando}
         >
@@ -158,6 +180,24 @@ export default function AltaUsuariosScreen() {
   );
 }
 
+function obtenerMensajeError(
+  datos,
+  mensajePredeterminado
+) {
+  if (typeof datos?.detail === "string") {
+    return datos.detail;
+  }
+
+  if (datos?.detail) {
+    return JSON.stringify(datos.detail);
+  }
+
+  if (typeof datos?.message === "string") {
+    return datos.message;
+  }
+
+  return mensajePredeterminado;
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -203,11 +243,15 @@ const styles = StyleSheet.create({
   },
 
   boton: {
-    backgroundColor: "#29bb0c",
+    backgroundColor: "#29BB0C",
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: "center",
     marginTop: 10,
+  },
+
+  botonDeshabilitado: {
+    opacity: 0.6,
   },
 
   textoBoton: {

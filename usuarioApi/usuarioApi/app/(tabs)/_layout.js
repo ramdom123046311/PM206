@@ -6,7 +6,6 @@ export default function TabsLayout() {
     <Tabs
       initialRouteName="alta"
       screenOptions={{
-        headerShown: true,
         tabBarActiveTintColor: "#2563EB",
         tabBarInactiveTintColor: "#6B7280",
       }}
