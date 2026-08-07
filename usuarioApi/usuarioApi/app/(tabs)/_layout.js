@@ -1,6 +1,5 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-
 export default function TabsLayout() {
   return (
     <Tabs
@@ -23,7 +22,6 @@ export default function TabsLayout() {
           ),
         }}
       />
-
       <Tabs.Screen
         name="consulta"
         options={{
@@ -37,7 +35,6 @@ export default function TabsLayout() {
           ),
         }}
       />
-
       <Tabs.Screen
         name="index"
         options={{
